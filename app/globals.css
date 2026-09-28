@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Base Color Tokens - Warm Off-White Salon Theme */
+    --background: 38 25% 97%;          /* #FAF8F5 - Warm Off-White */
+    --foreground: 20 14% 10%;          /* #1C1917 - Near-black / Charcoal */
+
+    --card: 40 30% 99%;                /* #FDFCF9 - Soft Cream White */
+    --card-foreground: 20 14% 10%;
+
+    --popover: 40 30% 99%;
+    --popover-foreground: 20 14% 10%;
+
+    /* Primary - Dark Charcoal Accent */
+    --primary: 20 14% 12%;             /* #211E1C */
+    --primary-foreground: 38 25% 97%;
+
+    /* Secondary - Muted Warm Neutral */
+    --secondary: 36 18% 92%;           /* #EFECE6 */
+    --secondary-foreground: 20 14% 15%;
+
+    /* Brand Accent - Configurable Salon Warm Gold / Champagne */
+    --accent: 28 35% 48%;              /* #9E7757 */
+    --accent-foreground: 38 25% 97%;
+
+    --muted: 36 15% 93%;               /* #F1EFEA */
+    --muted-foreground: 20 6% 45%;     /* #78716C */
+
+    --destructive: 0 72% 51%;          /* Muted Crimson */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 16% 88%;              /* #E7E2DA */
+    --input: 36 16% 88%;
+    --ring: 28 35% 48%;                /* Accent color ring */
+
+    --radius: 0.5rem;
+  }
+}
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+}
