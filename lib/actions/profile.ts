@@ -7,7 +7,7 @@ export async function updateCustomerProfile(input: UpdateProfileInput) {
   const validated = UpdateProfileSchema.safeParse(input);
   if (!validated.success) {
     return {
-      error: "INVALID_INPUT",
+      error: "INVALID_PROFILE_DATA",
       message: validated.error.issues[0]?.message || "Invalid profile input",
     };
   }
@@ -21,7 +21,7 @@ export async function updateCustomerProfile(input: UpdateProfileInput) {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return { error: "UNAUTHORIZED", message: "Please sign in to update your profile." };
+    return { error: "UNAUTHENTICATED", message: "Please sign in to update your profile." };
   }
 
   // Security: Whitelist editable fields only (role/id/email cannot be modified)
@@ -40,3 +40,4 @@ export async function updateCustomerProfile(input: UpdateProfileInput) {
 
   return { success: true, message: "Profile details updated successfully." };
 }
+

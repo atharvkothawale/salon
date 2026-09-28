@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Scissors, Menu, X, Calendar, User, LogIn } from "lucide-react";
+import { Scissors, Menu, X, Calendar, LogIn, MessageCircle } from "lucide-react";
 import { SALON_CONFIG } from "@/lib/constants/theme";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -15,11 +16,17 @@ const NAV_ITEMS = [
   { href: "/staff", label: "Stylists" },
 ];
 
+interface UserProfile {
+  full_name: string;
+  avatar_url: string | null;
+  role: string;
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     async function checkAuth() {
@@ -30,12 +37,15 @@ export function SiteHeader() {
           setIsLoggedIn(true);
           const { data: profile } = await supabase
             .from("profiles")
-            .select("role")
+            .select("role, full_name, avatar_url")
             .eq("id", user.id)
             .single();
-          if (profile?.role === "ADMIN") {
-            setIsAdmin(true);
+          if (profile) {
+            setUserProfile(profile);
           }
+        } else {
+          setIsLoggedIn(false);
+          setUserProfile(null);
         }
       } catch {
         // Fallback unauthenticated
@@ -43,6 +53,17 @@ export function SiteHeader() {
     }
     checkAuth();
   }, [pathname]);
+
+  const initials = userProfile?.full_name
+    ? userProfile.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
+    : "U";
+
+  const isAdmin = userProfile?.role === "ADMIN";
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/95 backdrop-blur-md transition-all">
@@ -57,7 +78,7 @@ export function SiteHeader() {
               {SALON_CONFIG.name}
             </span>
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
-              Haute Coiffure & Spa
+              {SALON_CONFIG.tagline}
             </span>
           </div>
         </Link>
@@ -103,12 +124,32 @@ export function SiteHeader() {
         </nav>
 
         {/* Desktop Action Buttons */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          {/* WhatsApp CTA */}
+          <a
+            href={SALON_CONFIG.contact.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 font-medium">
+              <MessageCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              WhatsApp Us
+            </Button>
+          </a>
+
           {isLoggedIn ? (
             <Link href="/profile">
-              <Button variant="ghost" size="sm" className="gap-2 text-xs">
-                <User className="h-4 w-4" />
-                My Account
+              <Button variant="ghost" size="sm" className="gap-2 text-xs pl-2 pr-3">
+                <Avatar className="h-6 w-6 border border-accent/40">
+                  {userProfile?.avatar_url ? (
+                    <AvatarImage src={userProfile.avatar_url} alt={userProfile.full_name} className="object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-accent text-accent-foreground text-[10px] font-bold">
+                      {initials}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <span>My Account</span>
               </Button>
             </Link>
           ) : (
@@ -121,14 +162,14 @@ export function SiteHeader() {
           )}
 
           <Link href="/book">
-            <Button variant="accent" size="sm" className="gap-2 text-xs font-semibold px-5">
+            <Button variant="accent" size="sm" className="gap-2 text-xs font-semibold px-4">
               <Calendar className="h-4 w-4" />
               Book Appointment
             </Button>
           </Link>
 
           {isAdmin && (
-            <Link href="/admin" className="text-xs text-accent font-semibold hover:underline ml-2">
+            <Link href="/admin" className="text-xs text-accent font-semibold hover:underline ml-1">
               Admin Portal
             </Link>
           )}
@@ -136,6 +177,15 @@ export function SiteHeader() {
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <a
+            href={SALON_CONFIG.contact.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="outline" size="sm" className="text-xs px-2.5 py-1 text-emerald-700 dark:text-emerald-400 border-emerald-600/30">
+              <MessageCircle className="h-3.5 w-3.5" />
+            </Button>
+          </a>
           <Link href="/book">
             <Button variant="accent" size="sm" className="text-xs px-3 py-1 font-semibold">
               Book
@@ -190,11 +240,31 @@ export function SiteHeader() {
             )}
 
             <div className="pt-4 border-t border-border flex flex-col gap-2">
+              <a
+                href={SALON_CONFIG.contact.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Button variant="outline" className="w-full justify-start gap-2 text-xs border-emerald-600/30 text-emerald-700 dark:text-emerald-400">
+                  <MessageCircle className="h-4 w-4 text-emerald-600" />
+                  <span>Chat on WhatsApp</span>
+                </Button>
+              </a>
+
               {isLoggedIn ? (
                 <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-start gap-2 text-xs">
-                    <User className="h-4 w-4" />
-                    My Account Profile
+                  <Button variant="outline" className="w-full justify-start gap-2.5 text-xs">
+                    <Avatar className="h-5 w-5 border border-accent/40">
+                      {userProfile?.avatar_url ? (
+                        <AvatarImage src={userProfile.avatar_url} alt={userProfile.full_name} className="object-cover" />
+                      ) : (
+                        <AvatarFallback className="bg-accent text-accent-foreground text-[9px] font-bold">
+                          {initials}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    <span>My Account Profile</span>
                   </Button>
                 </Link>
               ) : (

@@ -21,8 +21,12 @@ import {
   ShieldCheck,
   XCircle,
   Sparkles,
+  DollarSign,
+  FileText,
+  CalendarDays,
 } from "lucide-react";
 import { SALON_CONFIG } from "@/lib/constants/theme";
+import { formatINR } from "@/lib/utils";
 
 interface AppointmentPageProps {
   params: Promise<{ id: string }>;
@@ -47,8 +51,11 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
   }
 
   const startDate = new Date(appointment.start_datetime);
+  const endDate = new Date(appointment.end_datetime);
   const formattedDate = format(startDate, "EEEE, MMMM d, yyyy");
-  const formattedTime = format(startDate, "h:mm a");
+  const formattedStartTime = format(startDate, "h:mm a");
+  const formattedEndTime = format(endDate, "h:mm a");
+  const createdDate = format(new Date(appointment.created_at), "MMMM d, yyyy 'at' h:mm a");
 
   const service = appointment.services;
   const staff = appointment.staff;
@@ -66,13 +73,13 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
       {/* Back Navigation */}
       <Link
         href="/appointments"
-        className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to My Reservations
       </Link>
 
-      {/* Header Banner according to status */}
+      {/* Header Banner */}
       <div className="text-center space-y-4 py-8 px-6 rounded-2xl bg-card border border-border shadow-xs">
         {isCancelled ? (
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10 text-destructive mx-auto shadow-md">
@@ -111,12 +118,13 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
 
       {/* Main Reservation Card */}
       <Card className="border-border bg-card shadow-sm p-6 sm:p-8 space-y-8">
+        {/* Status & Price Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-border">
-          <div>
+          <div className="space-y-1">
             <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
               Reservation Status
             </span>
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-2">
               <Badge
                 variant={isCancelled ? "destructive" : "accent"}
                 className="font-semibold text-xs px-3 py-0.5"
@@ -124,18 +132,18 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
                 {appointment.appointment_status}
               </Badge>
               <Badge variant="outline" className="text-xs text-muted-foreground border-border">
-                Payment: {appointment.payment_method} ({appointment.payment_status})
+                Payment: {appointment.payment_method.replace(/_/g, " ")} ({appointment.payment_status})
               </Badge>
             </div>
           </div>
 
-          <div className="text-left sm:text-right">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
-              Total Amount
+          <div className="text-left sm:text-right space-y-0.5">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground flex items-center gap-1 sm:justify-end">
+              <DollarSign className="h-3 w-3 text-accent" />
+              Total Price (Authoritative)
             </span>
             <p className="font-serif text-2xl font-bold text-foreground">
-              {SALON_CONFIG.currency.symbol}
-              {Number(appointment.amount).toFixed(2)}
+              {formatINR(appointment.amount)}
             </p>
           </div>
         </div>
@@ -150,7 +158,7 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
             <p className="font-serif text-base font-semibold text-foreground">{formattedDate}</p>
             <p className="text-xs font-semibold text-accent flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
-              {formattedTime} ({service?.duration_minutes || 30} Mins)
+              {formattedStartTime} – {formattedEndTime} ({service?.duration_minutes || 30} Mins)
             </p>
           </div>
 
@@ -165,7 +173,7 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
           </div>
         </div>
 
-        {/* Service & Staff Details */}
+        {/* Service & Stylist Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-6 border-b border-border">
           {/* Service */}
           <div className="flex gap-4 items-center">
@@ -181,13 +189,13 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground flex items-center gap-1">
                 <Scissors className="h-3 w-3 text-accent" />
-                Service
+                Service & Duration
               </span>
               <h4 className="font-serif text-base font-semibold text-foreground">
                 {service?.name || "Salon Treatment"}
               </h4>
               <p className="text-xs text-muted-foreground">
-                {service?.service_categories?.name || "Haute Care"}
+                {service?.service_categories?.name || "Haute Care"} • {service?.duration_minutes || 30} Mins
               </p>
             </div>
           </div>
@@ -209,17 +217,18 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
                 Assigned Specialist
               </span>
               <h4 className="font-serif text-base font-semibold text-foreground">
-                {staff?.full_name || "Assigned Stylist"}
+                {staff?.full_name || "Any Available Stylist"}
               </h4>
               <p className="text-xs text-muted-foreground">{staff?.role_title || "Haute Hair Artist"}</p>
             </div>
           </div>
         </div>
 
-        {/* Customer Notes / Requests */}
+        {/* Customer Notes / Special Requests */}
         {appointment.notes && (
           <div className="space-y-2 pb-6 border-b border-border">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground flex items-center gap-1">
+              <FileText className="h-3 w-3 text-accent" />
               Customer Notes / Special Requests
             </span>
             <p className="text-xs text-foreground/90 italic bg-secondary/40 p-3 rounded-lg border border-border">
@@ -227,6 +236,12 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
             </p>
           </div>
         )}
+
+        {/* Created Date Meta */}
+        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pb-4">
+          <CalendarDays className="h-3.5 w-3.5 text-accent" />
+          <span>Booked on {createdDate}</span>
+        </div>
 
         {/* Interactive Actions (Cancellation / Reviews) */}
         <AppointmentDetailActions
@@ -267,4 +282,3 @@ export default async function AppointmentConfirmationPage({ params }: Appointmen
     </div>
   );
 }
-

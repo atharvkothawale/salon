@@ -1,9 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { Scissors, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { Scissors, MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 import { SALON_CONFIG } from "@/lib/constants/theme";
 
 export function SiteFooter() {
+  const telNumber = `tel:${SALON_CONFIG.contact.phone.replace(/[^+\d]/g, "")}`;
+
   return (
     <footer className="border-t border-border bg-card text-card-foreground py-12 lg:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,11 +62,11 @@ export function SiteFooter() {
             </h4>
             <div className="text-xs text-muted-foreground space-y-1.5">
               <p className="flex justify-between">
-                <span>Mon - Fri:</span>
+                <span>Mon - Sat:</span>
                 <span className="font-medium text-foreground">{SALON_CONFIG.hours.weekday}</span>
               </p>
               <p className="flex justify-between">
-                <span>Sat - Sun:</span>
+                <span>Sunday:</span>
                 <span className="font-medium text-foreground">{SALON_CONFIG.hours.weekend}</span>
               </p>
             </div>
@@ -82,11 +84,26 @@ export function SiteFooter() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-accent shrink-0" />
-                <span>{SALON_CONFIG.contact.phone}</span>
+                <a href={telNumber} className="hover:text-accent transition-colors">
+                  {SALON_CONFIG.contact.phone}
+                </a>
+              </li>
+              <li className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+                <a
+                  href={SALON_CONFIG.contact.whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors text-emerald-700 dark:text-emerald-400 font-medium"
+                >
+                  Chat on WhatsApp
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-accent shrink-0" />
-                <span>{SALON_CONFIG.contact.email}</span>
+                <a href={`mailto:${SALON_CONFIG.contact.email}`} className="hover:text-accent transition-colors">
+                  {SALON_CONFIG.contact.email}
+                </a>
               </li>
             </ul>
           </div>

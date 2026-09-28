@@ -5,7 +5,7 @@ import { Clock, Calendar, ArrowUpRight } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SALON_CONFIG } from "@/lib/constants/theme";
+import { formatINR } from "@/lib/utils";
 
 interface ServiceCardProps {
   id: string;
@@ -69,7 +69,7 @@ export function ServiceCard({
             <span>{durationMinutes} min</span>
           </div>
           <div className="font-serif text-base font-semibold text-foreground">
-            {SALON_CONFIG.currency.symbol}{price.toFixed(2)}
+            {formatINR(price)}
           </div>
         </div>
       </CardContent>

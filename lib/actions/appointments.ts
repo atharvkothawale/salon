@@ -189,7 +189,7 @@ export async function cancelAppointment(appointmentId: string) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "UNAUTHORIZED", message: "Please sign in to cancel your appointment." };
+    return { error: "UNAUTHENTICATED", message: "Please sign in to cancel your appointment." };
   }
 
   // Fetch appointment
@@ -200,12 +200,12 @@ export async function cancelAppointment(appointmentId: string) {
     .single();
 
   if (error || !appointment) {
-    return { error: "NOT_FOUND", message: "Appointment not found." };
+    return { error: "APPOINTMENT_NOT_FOUND", message: "Appointment not found." };
   }
 
   // Ownership check
   if (appointment.customer_id !== user.id) {
-    return { error: "NOT_FOUND", message: "Appointment not found." };
+    return { error: "UNAUTHORIZED", message: "You are not authorized to access this appointment." };
   }
 
   // Status check
@@ -224,7 +224,7 @@ export async function cancelAppointment(appointmentId: string) {
 
   if (hoursDiff < 24) {
     return {
-      error: "TOO_LATE_TO_CANCEL",
+      error: "CANCELLATION_WINDOW_EXPIRED",
       message: "Online cancellation is unavailable within 24 hours of your appointment. Please contact the salon directly.",
     };
   }
@@ -268,7 +268,7 @@ export async function submitReview(input: SubmitReviewInput) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "UNAUTHORIZED", message: "Please sign in to submit a review." };
+    return { error: "UNAUTHENTICATED", message: "Please sign in to submit a review." };
   }
 
   // Fetch appointment to verify ownership & completion status
@@ -279,7 +279,7 @@ export async function submitReview(input: SubmitReviewInput) {
     .single();
 
   if (appError || !appointment) {
-    return { error: "NOT_FOUND", message: "Appointment not found." };
+    return { error: "APPOINTMENT_NOT_FOUND", message: "Appointment not found." };
   }
 
   if (appointment.customer_id !== user.id) {
@@ -287,11 +287,11 @@ export async function submitReview(input: SubmitReviewInput) {
   }
 
   if (appointment.appointment_status !== "COMPLETED") {
-    return { error: "NOT_ELIGIBLE", message: "Reviews can only be submitted for completed salon treatments." };
+    return { error: "REVIEW_NOT_ALLOWED", message: "Reviews can only be submitted for completed salon treatments." };
   }
 
   if (appointment.reviews && (Array.isArray(appointment.reviews) ? appointment.reviews.length > 0 : Boolean(appointment.reviews))) {
-    return { error: "DUPLICATE_REVIEW", message: "You have already submitted a review for this treatment." };
+    return { error: "REVIEW_ALREADY_EXISTS", message: "You have already submitted a review for this treatment." };
   }
 
   // Insert review with PENDING moderation status

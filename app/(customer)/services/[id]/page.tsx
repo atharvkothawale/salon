@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Calendar, ArrowLeft, CheckCircle2, UserCheck } from "lucide-react";
 import { SALON_CONFIG } from "@/lib/constants/theme";
+import { formatINR } from "@/lib/utils";
 
 interface ServiceDetailPageProps {
   params: Promise<{ id: string }>;
@@ -82,7 +83,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
                 <span>{service.duration_minutes} Minutes Session</span>
               </div>
               <div className="font-serif text-2xl font-bold text-foreground">
-                {SALON_CONFIG.currency.symbol}{Number(service.price).toFixed(2)}
+                {formatINR(service.price)}
               </div>
             </div>
           </div>

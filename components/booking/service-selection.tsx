@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Check, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { SALON_CONFIG } from "@/lib/constants/theme";
-import { cn } from "@/lib/utils";
+
+import { cn, formatINR } from "@/lib/utils";
 
 interface Category {
   id: string;
@@ -136,7 +136,7 @@ export function ServiceSelection({
                     {service.duration_minutes} mins
                   </span>
                   <span className="font-serif text-sm font-semibold text-foreground">
-                    {SALON_CONFIG.currency.symbol}{Number(service.price).toFixed(2)}
+                    {formatINR(service.price)}
                   </span>
                 </div>
               </div>

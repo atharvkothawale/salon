@@ -14,6 +14,14 @@ import {
   getApprovedReviews,
 } from "@/services/public-data";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Lumière Salon & Spa | Premium Salon in Pune",
+  description:
+    "Premium hair, beauty, skin and grooming services in Pune. Book your appointment online with Lumière Salon & Spa.",
+};
+
 export const revalidate = 60; // Revalidate public cache every 60s
 
 export default async function HomePage() {

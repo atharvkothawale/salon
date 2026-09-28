@@ -2,7 +2,8 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Calendar, Scissors, Sparkles, Clock, MapPin } from "lucide-react";
+import { Calendar, Sparkles, Clock, MapPin, MessageCircle } from "lucide-react";
+import { SALON_CONFIG } from "@/lib/constants/theme";
 
 interface HeroSectionProps {
   salonName: string;
@@ -19,15 +20,15 @@ export function HeroSection({ salonName, address }: HeroSectionProps) {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-semibold uppercase tracking-widest">
               <Sparkles className="h-3.5 w-3.5 shrink-0" />
-              Haute Coiffure & Luxury Spa
+              {SALON_CONFIG.tagline}
             </div>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.1] text-foreground">
-              {salonName}
+              LUXURY, MADE PERSONAL
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
-              Experience bespoke hair design, restorative skincare, and spa treatments. Designed for those who appreciate quiet luxury, precision, and elegance.
+              Premium hair, beauty and wellness services designed around you at {salonName} in Baner, Pune.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
@@ -37,12 +38,17 @@ export function HeroSection({ salonName, address }: HeroSectionProps) {
                   Book Appointment
                 </Button>
               </Link>
-              <Link href="/services" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 py-6 text-sm font-medium gap-2">
-                  <Scissors className="h-4 w-4 text-muted-foreground" />
-                  Explore Services
+              <a
+                href={SALON_CONFIG.contact.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
+                <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 py-6 text-sm font-medium gap-2 border-emerald-600/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30">
+                  <MessageCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  WhatsApp Us
                 </Button>
-              </Link>
+              </a>
             </div>
 
             <div className="pt-6 border-t border-border/80 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 text-xs text-muted-foreground">
@@ -53,7 +59,7 @@ export function HeroSection({ salonName, address }: HeroSectionProps) {
               <div className="hidden sm:block h-3 w-px bg-border" />
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-accent shrink-0" />
-                <span>Mon – Sat: 9:00 AM – 8:00 PM</span>
+                <span>Mon – Sun: 10:00 AM – 8:00 PM</span>
               </div>
             </div>
           </div>
@@ -65,7 +71,7 @@ export function HeroSection({ salonName, address }: HeroSectionProps) {
               <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border shadow-xl">
                 <Image
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&q=80&w=1000"
-                  alt="Luxury Salon Interior"
+                  alt="Modern Luxury Salon Interior"
                   fill
                   priority
                   className="object-cover object-center transition-transform duration-700 hover:scale-105"
@@ -80,7 +86,7 @@ export function HeroSection({ salonName, address }: HeroSectionProps) {
                   5.0
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-foreground">Top Rated Salon</p>
+                  <p className="text-xs font-semibold text-foreground">Top Rated Salon in Pune</p>
                   <p className="text-[10px] text-muted-foreground">Over 500+ satisfied clients</p>
                 </div>
               </div>

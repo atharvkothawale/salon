@@ -5,8 +5,7 @@ import { format } from "date-fns";
 import { Calendar, Scissors, UserCheck, ArrowRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { SALON_CONFIG } from "@/lib/constants/theme";
+import { formatINR } from "@/lib/utils";
 
 interface BookingSummaryProps {
   serviceName: string | null;
@@ -42,9 +41,6 @@ export function BookingSummary({
       <CardHeader className="pb-3 border-b border-border/80">
         <CardTitle className="font-serif text-lg font-semibold text-foreground flex items-center justify-between">
           <span>Appointment Summary</span>
-          <Badge variant="outline" className="text-[10px] uppercase font-bold text-accent border-accent/30 bg-accent/5">
-            Phase 4B Preview
-          </Badge>
         </CardTitle>
       </CardHeader>
 
@@ -87,7 +83,7 @@ export function BookingSummary({
           <span className="font-medium text-foreground">Estimated Total</span>
           <span className="font-serif text-lg font-bold text-foreground">
             {servicePrice !== null
-              ? `${SALON_CONFIG.currency.symbol}${servicePrice.toFixed(2)}`
+              ? formatINR(servicePrice)
               : "—"}
           </span>
         </div>
@@ -110,7 +106,7 @@ export function BookingSummary({
               ? "Continue to Details"
               : currentStep === 4
               ? "Review Appointment"
-              : "Proceed to Confirmation Boundary"}
+              : "Proceed to Confirmation"}
           </span>
           <ArrowRight className="h-4 w-4" />
         </Button>

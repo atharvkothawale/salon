@@ -7,8 +7,9 @@ import { format } from "date-fns";
 import { Scissors, UserCheck, Calendar, Clock, User, ArrowLeft, Loader2, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { SALON_CONFIG } from "@/lib/constants/theme";
+
 import { createAppointment } from "@/lib/actions/appointments";
+import { formatINR } from "@/lib/utils";
 
 interface BookingReviewProps {
   serviceId: string;
@@ -115,7 +116,7 @@ export function BookingReview({
             <p className="font-serif text-lg font-semibold text-foreground">{serviceName}</p>
             <p className="text-xs text-muted-foreground">{serviceDuration} Minutes Session</p>
             <p className="font-serif text-base font-bold text-foreground pt-1">
-              {SALON_CONFIG.currency.symbol}{servicePrice.toFixed(2)}
+              {formatINR(servicePrice)}
             </p>
           </div>
 

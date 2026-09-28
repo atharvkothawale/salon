@@ -115,7 +115,7 @@ export function CustomerDetails({
               className="pl-9"
               value={customerPhone}
               onChange={(e) => onUpdatePhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
+              placeholder="+91 90000 00000"
             />
           </div>
         </div>
